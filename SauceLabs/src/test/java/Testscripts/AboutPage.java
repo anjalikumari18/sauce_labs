@@ -14,31 +14,47 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.io.FileHandler;
 
+import ObjectRepository.HomePage;
+import ObjectRepository.LoginPage;
+import Utilities.PropertyFileUtility;
+import Utilities.WebDriverUtility;
+
 public class AboutPage {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
 		
-		FileInputStream fis=new FileInputStream("C:\\Users\\DELL\\Desktop\\ClassDocs\\saucelab_credentials.properties");
-
-		Properties prop=new Properties();
-		prop.load(fis);
-		String URL = prop.getProperty("url");
-		String USER = prop.getProperty("username");
-		String PASSWORD = prop.getProperty("password");
-		
+		PropertyFileUtility putil=new PropertyFileUtility();
+		String URL = putil.getDataFromPropertiesFile("url");
+		String USER = putil.getDataFromPropertiesFile("username");
+		String PASSWORD = putil.getDataFromPropertiesFile("password");
+						
 		WebDriver driver=new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+		WebDriverUtility wutil=new WebDriverUtility();
+		wutil.implicitWait(driver, 15);
+		
+		//driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 		driver.get(URL);
 		
-		driver.findElement(By.id("user-name")).sendKeys(USER);
-		driver.findElement(By.id("password")).sendKeys(PASSWORD);
-		driver.findElement(By.id("login-button")).click();
-		Thread.sleep(3000);
+		//Applied webelelements from Object Repo : LoginPage
+		LoginPage lp=new LoginPage(driver);
+		lp.LoginAction(USER, PASSWORD);
 		
-		driver.findElement(By.xpath("//button[text()='Open Menu']")).click();
-		driver.findElement(By.linkText("About")).click();
+		
+		/*
+		lp.getUsernametf().sendKeys(USER);
+		lp.getPasswordtf().sendKeys(PASSWORD);
+		lp.getLoginbutton().click();
+		*/
+		
+	
+		Thread.sleep(3000);
+		HomePage hp=new HomePage(driver);
+		
+		hp.getOpen_menu_button().click();
+     	hp.getAbout_page_link().click();
+		
 		//Take ss of About Page
 		TakesScreenshot tks=(TakesScreenshot)driver;
 		File temp = tks.getScreenshotAs(OutputType.FILE);
@@ -59,8 +75,7 @@ public class AboutPage {
 		driver.navigate().back();
 		
 		//Logout code
-		driver.findElement(By.xpath("//button[text()='Open Menu']")).click();
-		driver.findElement(By.linkText("Logout")).click();
+		hp.LogoutAction();
 		driver.close();
 
 		

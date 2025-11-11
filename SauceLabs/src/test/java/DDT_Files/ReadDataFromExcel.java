@@ -28,19 +28,19 @@ public class ReadDataFromExcel {
 		FileInputStream fis=new FileInputStream("C:\\Users\\DELL\\Desktop\\ClassDocs\\DemoWebShop.xlsx");
 		
 		//Open workbook in read mode
-	    Workbook wb = WorkbookFactory.create(fis);
+	     Workbook wb = WorkbookFactory.create(fis);
 		//Get access of entire sheet
-		Sheet sh = wb.getSheet("Sheet3");
+		 Sheet sh = wb.getSheet("Sheet3");
 		
 		//get access of entire row
-		Row r = sh.getRow(0);
+		 Row r = sh.getRow(0);
 		
 		//get access of cell
 		Cell cell = r.getCell(1);
 		
-		Cell cellwrite = r.createCell(3);
 		
-		cellwrite.setCellValue("PASS");
+		
+		//cellwrite.setCellValue("PASS");
 		
 		FileOutputStream fos=new FileOutputStream("C:\\Users\\DELL\\Desktop\\ClassDocs\\DemoWebShop.xlsx");
 		

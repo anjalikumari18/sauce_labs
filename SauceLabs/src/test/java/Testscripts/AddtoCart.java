@@ -15,6 +15,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.io.FileHandler;
 
+import ObjectRepository.CheckOutPage;
+import ObjectRepository.HomePage;
+import ObjectRepository.LoginPage;
+import Utilities.ExcelFileUtility;
+
 public class AddtoCart {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
@@ -34,9 +39,8 @@ public class AddtoCart {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 		driver.get(URL);
 		
-		driver.findElement(By.id("user-name")).sendKeys(USER);
-		driver.findElement(By.id("password")).sendKeys(PASSWORD);
-		driver.findElement(By.id("login-button")).click();
+	    LoginPage lp=new LoginPage(driver);
+	    lp.LoginAction(USER, PASSWORD);
 		
 		Thread.sleep(3000);
 
@@ -45,17 +49,15 @@ public class AddtoCart {
 		driver.findElement(By.xpath("(//button[text()='Add to cart'])[3]")).click();
 		
 		driver.findElement(By.id("shopping_cart_container")).click();
-		driver.findElement(By.id("checkout")).click();
+		CheckOutPage cp=new CheckOutPage(driver);
+		cp.getCheckout_button().click();
+		//driver.findElement(By.id("checkout")).click();
 		
-		FileInputStream fis2=new FileInputStream("C:\\Users\\DELL\\Desktop\\ClassDocs\\SauceLab_testdata.xlsx");
-		Workbook wb = WorkbookFactory.create(fis2);
-		String fn = wb.getSheet("Sheet1").getRow(0).getCell(1).getStringCellValue();
-		String ln= wb.getSheet("Sheet1").getRow(1).getCell(1).getStringCellValue();
-		String pin = wb.getSheet("Sheet1").getRow(2).getCell(1).getStringCellValue().toString();
-		
-		wb.close();
+		ExcelFileUtility eutil=new ExcelFileUtility();
+		String fn = eutil.getDataFromExcelFile("Sheet1", 0, 1);
+		String ln = eutil.getDataFromExcelFile("Sheet1", 1, 1);
+		String pin = eutil.getDataFromExcelFile("Sheet1", 2, 1);
 
-		
 		//Test data
 		driver.findElement(By.id("first-name")).sendKeys(fn);
 		driver.findElement(By.id("last-name")).sendKeys(ln);
@@ -85,8 +87,8 @@ public class AddtoCart {
 		
 		
 		//Logout code
-		driver.findElement(By.xpath("//button[text()='Open Menu']")).click();
-		driver.findElement(By.linkText("Logout")).click();
+		HomePage hp=new HomePage(driver);
+		hp.LogoutAction();
 		driver.close();
 		
 	}
