@@ -14,33 +14,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.io.FileHandler;
+import org.testng.annotations.Test;
 
+import BaseClassUtility.BaseClass;
 import ObjectRepository.CheckOutPage;
 import ObjectRepository.HomePage;
 import ObjectRepository.LoginPage;
 import Utilities.ExcelFileUtility;
 
-public class AddtoCart {
+public class AddtoCart extends BaseClass{
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		
-		
-		FileInputStream fis=new FileInputStream("C:\\Users\\DELL\\Desktop\\ClassDocs\\saucelab_credentials.properties");
-
-		Properties prop=new Properties();
-		prop.load(fis);
-		String URL = prop.getProperty("url");
-		String USER = prop.getProperty("username");
-		String PASSWORD = prop.getProperty("password");
-		
-		WebDriver driver=new ChromeDriver();
-		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
-		driver.get(URL);
-		
-	    LoginPage lp=new LoginPage(driver);
-	    lp.LoginAction(USER, PASSWORD);
+	@Test 
+	public void AddToCartTest() throws IOException, InterruptedException
+	{
 		
 		Thread.sleep(3000);
 
@@ -66,8 +52,6 @@ public class AddtoCart {
 		
 		driver.findElement(By.id("finish")).click();
 		
-		
-		
 		WebElement checkout_image = driver.findElement(By.id("checkout_complete_container"));
 		File temp = checkout_image.getScreenshotAs(OutputType.FILE);
 		File perm=new File("./Errorshots/orderconfirm.png");
@@ -84,13 +68,6 @@ public class AddtoCart {
 		{
 			System.out.println("Product could not be added. Failure detected");
 		}
-		
-		
-		//Logout code
-		HomePage hp=new HomePage(driver);
-		hp.LogoutAction();
-		driver.close();
-		
-	}
+		}
 
 }
