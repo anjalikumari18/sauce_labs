@@ -15,7 +15,7 @@ import BaseClassUtility.BaseClass;
 
 public class FacebookIcon extends BaseClass{
 
-	@Test
+	@Test(groups = "regression")
 	public void FacebookTest() throws InterruptedException {
 		Thread.sleep(3000);
 		

@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -13,6 +15,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 
 import ObjectRepository.HomePage;
 import ObjectRepository.LoginPage;
@@ -21,29 +24,43 @@ import Utilities.WebDriverUtility;
 
 public class BaseClass {
 	
-	public WebDriver driver;
+	public WebDriver driver;	
+	public PropertyFileUtility putil=new PropertyFileUtility();
+
 	public HomePage hp;
 	public LoginPage lp;
-	public PropertyFileUtility putil=new PropertyFileUtility();
 	
 	
-	@BeforeSuite
+	@BeforeSuite (groups = { "smoke","regression" })
 	public void configBS() {
 		Reporter.log("DB Connectivity",true);
 	}
 	
-	@BeforeTest
+	@BeforeTest (groups = { "smoke","regression" })
 	public void configBT() {
 		Reporter.log("Pre-condition if any",true);
 	}
 	
-	
-	@BeforeClass
-	public void configBC() throws IOException {
+	//@Parameters("Browser") //cbt
+	@BeforeClass (groups = { "smoke","regression" })
+	public void configBC(/*String brow*/) throws IOException {
 		
-		PropertyFileUtility putil=new PropertyFileUtility();
-		String URL = putil.getDataFromPropertiesFile("url");						
-		driver=new ChromeDriver();
+		String URL = putil.getDataFromPropertiesFile("url");
+		//String BROWSER=brow; //cbt
+		String BROWSER = putil.getDataFromPropertiesFile("browser");
+        //System.out.println(BROWSER);
+		if(BROWSER.equalsIgnoreCase("chrome")) {
+			driver=new ChromeDriver();
+		}else if(BROWSER.equalsIgnoreCase("edge")) {
+			driver=new EdgeDriver();
+		}else if(BROWSER.equalsIgnoreCase("firefox")) {
+			driver=new FirefoxDriver();
+		}else
+		{
+			driver=new ChromeDriver();
+		}
+		//driver=new ChromeDriver();
+		
 		driver.manage().window().maximize();
 		WebDriverUtility wutil=new WebDriverUtility();
 		wutil.implicitWait(driver, 15);
@@ -52,39 +69,38 @@ public class BaseClass {
 	}
 	
 	
-	@BeforeMethod
+	@BeforeMethod (groups = { "smoke","regression" })
 	public void configBM() throws IOException {
-		//Applied webelelements from Object Repo : LoginPage
 		String USER = putil.getDataFromPropertiesFile("username");
 		String PASSWORD = putil.getDataFromPropertiesFile("password");
-		LoginPage lp=new LoginPage(driver);
+		lp=new LoginPage(driver);
         lp.LoginAction(USER, PASSWORD);
 		Reporter.log("Logged in",true);
 	}
 	
-	@AfterMethod
+	@AfterMethod (groups = { "smoke","regression" })
 	public void configAM() {
-		HomePage hp=new HomePage(driver);
+		hp=new HomePage(driver);
 		hp.LogoutAction();
 		Reporter.log("Logged out of the application",true);
 	
 	}
 	
 	
-	@AfterClass
+	@AfterClass (groups = { "smoke","regression" })
 	public void configAC() {
-		driver.close();
+		driver.quit();
 	    Reporter.log("Browser closed successfully",true);
 
 	}
 	
-	@AfterTest
+	@AfterTest (groups = { "smoke","regression" })
 	public void configAT() {
 	    Reporter.log("Post-condition if any",true);
 
 	}
 	
-	@AfterSuite
+	@AfterSuite (groups = { "smoke","regression" })
 	public void configAS() {
 		Reporter.log("DB Disconnected + Report Backed up", true);
 	}

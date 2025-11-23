@@ -14,6 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.io.FileHandler;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import BaseClassUtility.BaseClass;
@@ -24,7 +25,7 @@ import Utilities.ExcelFileUtility;
 
 public class AddtoCart extends BaseClass{
 
-	@Test 
+	@Test (groups = {"smoke","regression"})
 	public void AddToCartTest() throws IOException, InterruptedException
 	{
 		
@@ -57,17 +58,21 @@ public class AddtoCart extends BaseClass{
 		File perm=new File("./Errorshots/orderconfirm.png");
 		FileHandler.copy(temp, perm);
 		
-		String expected_confmsg = "Thank you for your order!";
+		String expected_confmsg = "Thank you for your order";
 		WebElement conf_msg = driver.findElement(By.xpath("//h2[text()='Thank you for your order!']"));
 		String actual_confmsg = conf_msg.getText();
 		System.out.println(actual_confmsg);
-		
+		/*
 		if(actual_confmsg.contains(expected_confmsg)) {
 			System.out.println("Product added to cart successfully");
 		}else
 		{
 			System.out.println("Product could not be added. Failure detected");
 		}
+		*/
+		
+		Assert.assertEquals(actual_confmsg, expected_confmsg,"Product not added");
+		
 		}
 
 }
